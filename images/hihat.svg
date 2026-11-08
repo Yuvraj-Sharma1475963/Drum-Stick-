@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 440">
+  <defs>
+    <linearGradient id="cym" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b8962e"/>
+      <stop offset=".5" stop-color="#f3dc8a"/>
+      <stop offset="1" stop-color="#a8852a"/>
+    </linearGradient>
+    <linearGradient id="pole" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8a8f98"/>
+      <stop offset=".5" stop-color="#eef1f5"/>
+      <stop offset="1" stop-color="#7d828b"/>
+    </linearGradient>
+  </defs>
+  <rect x="96" y="40" width="8" height="330" fill="url(#pole)"/>
+  <path d="M10 62 Q100 34 190 62 Q100 54 10 62Z" fill="url(#cym)"/>
+  <path d="M10 70 Q100 98 190 70 Q100 78 10 70Z" fill="url(#cym)"/>
+  <rect x="94" y="56" width="12" height="16" rx="3" fill="#555"/>
+  <rect x="93" y="200" width="14" height="10" rx="2" fill="#888"/>
+  <path d="M100 360 L30 430 M100 360 L170 430 M100 360 L100 432" stroke="url(#pole)" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <rect x="70" y="414" width="50" height="14" rx="4" fill="#3a3d44" transform="rotate(-8 95 421)"/>
+</svg>

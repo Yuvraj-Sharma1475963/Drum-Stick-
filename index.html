@@ -3,31 +3,133 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Play drums with your keyboard, build beats in a step sequencer and learn real grooves with a guided practice mode.">
   <title>Drum Kit</title>
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css?family=Arvo" rel="stylesheet">
   <link rel="icon" href="icon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+  <header class="topbar">
+    <h1 class="brand">Drum <span aria-hidden="true">🥁</span> Kit</h1>
 
-  <h1 id="title">Drum 🥁 Kit</h1>
-  <div class="set">
-    <button class="w drum">w</button>
-    <button class="a drum">a</button>
-    <button class="s drum">s</button>
-    <button class="d drum">d</button>
-    <button class="j drum">j</button>
-    <button class="k drum">k</button>
-    <button class="l drum">l</button>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" data-view="play">Play</button>
+      <button class="tab" role="tab" data-view="seq">Sequencer</button>
+      <button class="tab" role="tab" data-view="learn">Learn</button>
+    </nav>
+
+    <div class="transport">
+      <div class="bpm" title="Tempo (beats per minute)">
+        <button id="bpm-down" class="mini" aria-label="Slower">−</button>
+        <label><input id="bpm" type="number" min="40" max="240" value="90" aria-label="BPM"><small>BPM</small></label>
+        <button id="bpm-up" class="mini" aria-label="Faster">+</button>
+        <input id="bpm-range" type="range" min="40" max="240" value="90" aria-label="Tempo slider">
+        <button id="tap" class="mini wide" title="Tap tempo (T)">Tap</button>
+      </div>
+      <button id="metro" class="toggle" aria-pressed="false" title="Metronome (M)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6l4 20H5L9 2zm3 4-1.6 8h3.2L12 6zm6.5-1.5 1.4 1.4-5.6 5.6-.7-1.4 4.9-5.6z" fill="currentColor"/></svg>
+        <span>Click</span>
+      </button>
+      <label class="vol" title="Volume">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z" fill="currentColor"/></svg>
+        <input id="volume" type="range" min="0" max="1" step="0.01" aria-label="Volume">
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================== PLAY ============================== -->
+    <section id="view-play" class="view" hidden>
+      <div id="kit" class="kit"></div>
+
+      <div class="panel recorder">
+        <div class="rec-buttons">
+          <button id="rec" class="btn rec" aria-pressed="false"><span class="dot"></span><span>Record</span></button>
+          <button id="rec-play" class="btn" aria-pressed="false"><span class="ico">▶</span><span>Play</span></button>
+          <label class="check"><input type="checkbox" id="rec-loop" checked> Loop</label>
+          <button id="rec-to-seq" class="btn ghost">Quantise → Sequencer</button>
+          <button id="rec-clear" class="btn ghost">Clear</button>
+        </div>
+        <p id="rec-status" class="muted"></p>
+      </div>
+
+      <p class="hint">
+        <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> left hand · <kbd>H</kbd> <kbd>J</kbd> <kbd>K</kbd> <kbd>L</kbd> right hand ·
+        <kbd>Space</kbd> play/stop · <kbd>R</kbd> record · <kbd>M</kbd> metronome · <kbd>T</kbd> tap tempo.
+        New to drums? Open <a href="#" data-goto="learn">Learn</a>.
+      </p>
+    </section>
+
+    <!-- ============================ SEQUENCER ============================ -->
+    <section id="view-seq" class="view" hidden>
+      <div class="panel seq-toolbar">
+        <button id="seq-play" class="btn primary" aria-pressed="false"><span class="ico">▶</span><span>Play</span></button>
+        <label>Steps
+          <select id="seq-steps"><option value="16">16 (1 bar)</option><option value="32">32 (2 bars)</option></select>
+        </label>
+        <label class="swing">Swing <input id="swing" type="range" min="0" max="60" value="0"> <output id="swing-val">0%</output></label>
+        <select id="seq-preset" aria-label="Load a groove"></select>
+        <button id="seq-clear" class="btn ghost">Clear</button>
+      </div>
+      <div class="seq-wrap"><div id="seq-grid" class="seq"></div></div>
+      <p class="hint">Click or drag across cells to paint notes. Click an instrument name to hear it. Your pattern is saved automatically.</p>
+    </section>
+
+    <!-- ============================== LEARN ============================== -->
+    <section id="view-learn" class="view" hidden>
+      <div class="learn">
+        <aside>
+          <div class="panel getting-started">
+            <h3>Getting started</h3>
+            <p>Your keyboard is the drum kit. Rest your fingers like this:</p>
+            <div id="keymap" class="keymap"></div>
+            <p class="muted small">Left pinky on <kbd>A</kbd> is your kick “foot”. Right index on <kbd>H</kbd> keeps time on the hi-hat — just like a real drummer’s right hand.</p>
+          </div>
+          <div id="lesson-list" class="lesson-list"></div>
+        </aside>
+        <article id="lesson-detail" class="panel lesson-detail"></article>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================= PRACTICE ============================= -->
+  <div id="practice" class="practice" hidden>
+    <div class="pr-bar">
+      <div>
+        <p class="eyebrow">Practice mode · <span id="pr-tempo"></span></p>
+        <h2 id="pr-title"></h2>
+      </div>
+      <div class="pr-stats">
+        <div><small>Accuracy</small><strong id="pr-acc">100%</strong></div>
+        <div><small>Streak</small><strong id="pr-streak">0</strong></div>
+        <div><small>Notes left</small><strong id="pr-left">0</strong></div>
+      </div>
+      <button id="pr-stop" class="btn">✕ Stop <kbd>Esc</kbd></button>
+    </div>
+    <canvas id="hw" class="highway"></canvas>
+    <p class="pr-help">Press the key as each note crosses the pink line. You get one bar of clicks to count you in.</p>
+    <div id="pr-results" class="pr-results" hidden></div>
   </div>
 
-
-  <footer id="ys">
+  <footer>
     <p>Created By @ Y.S.</p>
   </footer>
-  <script src="index.js" charset="utf-8">
-    </script>
+
+  <script src="js/sound-data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/lessons.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest("[data-goto]");
+      if (a) { e.preventDefault(); document.querySelector('.tab[data-view="' + a.dataset.goto + '"]').click(); }
+    });
+  </script>
 </body>
 
 </html>
